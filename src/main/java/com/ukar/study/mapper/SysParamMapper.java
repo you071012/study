@@ -1,10 +1,7 @@
 package com.ukar.study.mapper;
 
-import com.ukar.study.entity.SysParamDO;
-import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.ukar.study.entity.SysParam;
 
-public interface SysParamMapper {
-
-    SysParamDO selectByParamKey(@Param("paramKey") String key);
-
+public interface SysParamMapper extends BaseMapper<SysParam> {
 }

@@ -1,18 +1,15 @@
-package com.ukar.study.config;
+package com.ukar.study.mybatis;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.wall.WallConfig;
-import com.alibaba.druid.wall.WallFilter;
-import com.github.pagehelper.PageInterceptor;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
+import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -25,18 +22,16 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
 @MapperScan(basePackages = {"com.ukar.study.mapper"},
         sqlSessionFactoryRef = "sqlSessionFactory",
         sqlSessionTemplateRef = "sqlSessionTemplate")
-public class DatasourceConfig {
+public class MybatisPlusConfig {
 
     @Value("${yun.druid.driverClass:com.mysql.jdbc.Driver}")
     private String driverClass;
@@ -81,17 +76,9 @@ public class DatasourceConfig {
     @Value("${yun.druid.maxPoolPreparedStatementPerConnectionSize:20}")
     private int maxPoolPreparedStatementPerConnectionSize;
 
-    @Value("${yun.druid.filters:stat,slf4j}")
-    //配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
-    private String filters;
-
     @Value("${yun.druid.connectionProperties:druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000}")
     //通过connectProperties属性来打开mergeSql功能；慢SQL记录
     private String connectionProperties;
-
-    @Value("${yun.druid.useGlobalDataSourceStat:true}")
-    //合并多个DruidDataSource的监控数据
-    private boolean useGlobalDataSourceStat;
 
 
     @Bean(name = "dataSource")
@@ -102,7 +89,7 @@ public class DatasourceConfig {
         datasource.setUrl("jdbc:mysql://rte4oakfu7e7q4k0qzwg-rw4rm.rwlb.rds.aliyuncs.com:3306/poseidon_dev?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true");
         datasource.setUsername("poseidon_dev");
         datasource.setPassword("Cpnqc0BLfPxAJKzt");
-        datasource.setDriverClassName(driverClass);
+        datasource.setDriverClassName("com.mysql.jdbc.Driver");
 
         datasource.setInitialSize(initialSize);
         datasource.setMinIdle(minIdle);
@@ -117,50 +104,41 @@ public class DatasourceConfig {
         datasource.setTestOnReturn(testOnReturn);
         datasource.setPoolPreparedStatements(poolPreparedStatements);
         datasource.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize);
-        datasource.setUseGlobalDataSourceStat(useGlobalDataSourceStat);
-
-        try {
-            datasource.setFilters(filters);
-        } catch (SQLException e) {
-            System.err.println("druid configuration initialization filter: " + e);
-        }
         datasource.setConnectionProperties(connectionProperties);
-
-        //添加允许批量更新filter
-        List filterList=new ArrayList<>();
-        filterList.add(wallFilter());
-        datasource.setProxyFilters(filterList);
 
         return datasource;
     }
 
 
-    @Bean(value = "sqlSessionTemplate")
-    public SqlSessionTemplate sqlSessionTemplate(@Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
-        return new SqlSessionTemplate(sqlSessionFactory);
-    }
-
     @Bean(value = "sqlSessionFactory")
     @Primary
-    public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
-        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+    public MybatisSqlSessionFactoryBean sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
+        MybatisSqlSessionFactoryBean sqlSessionFactoryBean = new MybatisSqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
         sqlSessionFactoryBean.setTypeAliasesPackage("com.ukar.study.entity");
         String[] mapperLocations = new String[1];
         mapperLocations[0] = "classpath*:/mapper/*Mapper.xml";
         sqlSessionFactoryBean.setMapperLocations(resolveMapperLocations(mapperLocations));
+
+        //设置分页插件
+        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+        // 设置请求的页面大于最大页后操作， true调回到首页，false 继续请求  默认false
+        // paginationInterceptor.setOverflow(false);
+        // 设置最大单页限制数量，默认 500 条，-1 不受限制
+        // paginationInterceptor.setLimit(500);
+        // 开启 count 的 join 优化,只针对部分 left join
+        paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
+        sqlSessionFactoryBean.setPlugins(new Interceptor[]{paginationInterceptor});
+
         //设置驼峰映射
-        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        MybatisConfiguration configuration = new MybatisConfiguration();
         configuration.setMapUnderscoreToCamelCase(true);
         sqlSessionFactoryBean.setConfiguration(configuration);
 
-        //设置分页插件
-        PageInterceptor pageInterceptor = new PageInterceptor();
-        Properties props = new Properties();
-        props.setProperty("helperDialect", "mysql");
-        pageInterceptor.setProperties(props);
-        sqlSessionFactoryBean.setPlugins(new Interceptor[]{pageInterceptor});
-        return sqlSessionFactoryBean.getObject();
+        GlobalConfig globalConfig = new GlobalConfig();
+        sqlSessionFactoryBean.setGlobalConfig(globalConfig);
+
+        return sqlSessionFactoryBean;
     }
 
     public Resource[] resolveMapperLocations(String[] mapperLocations) {
@@ -194,18 +172,4 @@ public class DatasourceConfig {
         return dataSourceTransactionManager;
     }
 
-
-    public WallFilter wallFilter(){
-        WallFilter wallFilter=new WallFilter();
-        wallFilter.setConfig(wallConfig());
-        return wallFilter;
-    }
-
-    public WallConfig wallConfig(){
-        WallConfig config =new WallConfig();
-        //允许一次执行多条语句
-        config.setMultiStatementAllow(true);
-        config.setNoneBaseStatementAllow(true);
-        return config;
-    }
 }

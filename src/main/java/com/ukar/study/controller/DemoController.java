@@ -1,10 +1,9 @@
 package com.ukar.study.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ukar.study.entity.SysParam;
-import com.ukar.study.mapper.SysParamMapper;
+import com.ukar.study.entity.User;
+import com.ukar.study.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,24 +20,24 @@ import java.util.List;
 public class DemoController {
 
     @Autowired
-    private SysParamMapper sysParamMapper;
+    private UserMapper userMapper;
 
     @RequestMapping("/index")
     public String index(){
 
-        QueryWrapper<SysParam> queryWrapper = new QueryWrapper();
-        queryWrapper.lambda().eq(SysParam::getParamKey, "RSA_PUB_KEY_test");
-        SysParam sysParam = sysParamMapper.selectOne(queryWrapper);
-        return sysParam == null ? "NULL" : sysParam.getParamValue();
+        QueryWrapper<User> queryWrapper = new QueryWrapper();
+        queryWrapper.lambda().eq(User::getName, "ukar");
+        User user = userMapper.selectOne(queryWrapper);
+        return user == null ? "NULL" : user.toString();
     }
 
     @RequestMapping("/page")
-    public List<SysParam> page(){
-        QueryWrapper<SysParam> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().orderByAsc(SysParam::getId);
-        Page<SysParam> page = new Page<>(1,2);
-        page = sysParamMapper.selectPage(page, queryWrapper);
-        List<SysParam> records = page.getRecords();
+    public List<User> page(){
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().orderByAsc(User::getId);
+        Page<User> page = new Page<>(1,1);
+        page = userMapper.selectPage(page, queryWrapper);
+        List<User> records = page.getRecords();
         return records;
     }
 }

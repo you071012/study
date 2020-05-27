@@ -6,23 +6,15 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.util.Date;
-
+@TableName(value = "t_user")
 @Data
-@TableName(value = "sys_param")
-public class SysParam {
+public class User {
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
-    @TableField(value = "param_key")
-    private String paramKey;
-
-    private String paramValue;
+    @TableField(value = "name")
+    private String name;
 
     private String remark;
-
-    private Date createTime;
-
-    private Date updateTime;
 }

@@ -86,9 +86,9 @@ public class MybatisPlusConfig {
     public DataSource dataSource() {
 
         DruidDataSource datasource = new DruidDataSource();
-        datasource.setUrl("jdbc:mysql://rte4oakfu7e7q4k0qzwg-rw4rm.rwlb.rds.aliyuncs.com:3306/poseidon_dev?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true");
-        datasource.setUsername("poseidon_dev");
-        datasource.setPassword("Cpnqc0BLfPxAJKzt");
+        datasource.setUrl("jdbc:mysql://localhost:3306/ukar?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true");
+        datasource.setUsername("root");
+        datasource.setPassword("12345678");
         datasource.setDriverClassName("com.mysql.jdbc.Driver");
 
         datasource.setInitialSize(initialSize);

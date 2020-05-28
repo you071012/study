@@ -1,8 +1,11 @@
 package com.ukar.study.mybatis;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
+import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
+import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
@@ -29,8 +32,7 @@ import java.util.List;
 @Configuration
 @EnableTransactionManagement
 @MapperScan(basePackages = {"com.ukar.study.mapper"},
-        sqlSessionFactoryRef = "sqlSessionFactory",
-        sqlSessionTemplateRef = "sqlSessionTemplate")
+        sqlSessionFactoryRef = "sqlSessionFactory")
 public class MybatisPlusConfig {
 
     @Value("${yun.druid.driverClass:com.mysql.jdbc.Driver}")
@@ -88,7 +90,7 @@ public class MybatisPlusConfig {
         DruidDataSource datasource = new DruidDataSource();
         datasource.setUrl("jdbc:mysql://localhost:3306/ukar?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true");
         datasource.setUsername("root");
-        datasource.setPassword("12345678");
+        datasource.setPassword("071012");
         datasource.setDriverClassName("com.mysql.jdbc.Driver");
 
         datasource.setInitialSize(initialSize);
@@ -136,6 +138,12 @@ public class MybatisPlusConfig {
         sqlSessionFactoryBean.setConfiguration(configuration);
 
         GlobalConfig globalConfig = new GlobalConfig();
+        //机器id信息可能要随着机器变更
+        IdentifierGenerator generator = new DefaultIdentifierGenerator(1,0);
+        globalConfig.setIdentifierGenerator(generator);
+//        GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
+//        dbConfig.setIdType(IdType.ASSIGN_ID);
+//        globalConfig.setDbConfig(dbConfig);
         sqlSessionFactoryBean.setGlobalConfig(globalConfig);
 
         return sqlSessionFactoryBean;

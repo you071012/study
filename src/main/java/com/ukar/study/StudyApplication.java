@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication(scanBasePackages = {"com.ukar.*"})
+@SpringBootApplication(scanBasePackages = {"com.ukar.study.*"})
 @EnableScheduling
 @EnableAutoConfiguration
 public class StudyApplication {

@@ -6,6 +6,7 @@ import com.ukar.study.entity.User;
 import com.ukar.study.mapper.UserMapper;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,9 @@ public class DemoController {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Value("${server.port}")
+    private String aa;
 
     @RequestMapping("/index")
     public String index(){

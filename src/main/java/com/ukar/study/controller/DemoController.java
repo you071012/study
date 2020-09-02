@@ -4,11 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ukar.study.entity.User;
 import com.ukar.study.mapper.UserMapper;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 
@@ -43,5 +49,39 @@ public class DemoController {
         page = userMapper.selectPage(page, queryWrapper);
         List<User> records = page.getRecords();
         return records;
+    }
+
+    @RequestMapping("/img")
+    public void getImg(@RequestParam("imgUrl") String imgUrl, HttpServletResponse response){
+
+        ServletOutputStream out = null;
+        FileInputStream ips = null;
+        try{
+            String imgPath = "/Users/youjia/Desktop/tools/ukar/doc/" + imgUrl;
+            String type = "jpeg";
+            if(type.equals("png")){
+                response.setContentType("image/png");
+            }
+
+            if(type.equals("jpeg")){
+                response.setContentType("image/jpeg");
+            }
+
+            out = response.getOutputStream();
+            ips = new FileInputStream(new File(imgPath));
+
+            int len;
+            byte[] buffer = new byte[1024*10];
+            while ((len = ips.read(buffer)) != -1){
+                out.write(buffer, 0, len);
+            }
+            out.flush();
+
+
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        IOUtils.closeQuietly(out);
+        IOUtils.closeQuietly(ips);
     }
 }

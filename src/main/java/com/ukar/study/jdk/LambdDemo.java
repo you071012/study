@@ -3,6 +3,7 @@ package com.ukar.study.jdk;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.ukar.study.jdk.bo.UserBO;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -15,6 +16,8 @@ import java.util.stream.Stream;
  * @date 2020/03/25
  */
 public class LambdDemo {
+
+    public static List<String> list = new ArrayList<>();
 
     /**
      * 排序

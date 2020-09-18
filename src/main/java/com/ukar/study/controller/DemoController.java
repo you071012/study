@@ -34,7 +34,6 @@ public class DemoController {
 
     @RequestMapping("/index")
     public String index(){
-
         QueryWrapper<User> queryWrapper = new QueryWrapper();
         queryWrapper.lambda().eq(User::getName, "ukar");
         User user = userMapper.selectOne(queryWrapper);

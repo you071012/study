@@ -88,7 +88,7 @@ public class MybatisPlusConfig {
     public DataSource dataSource() {
 
         DruidDataSource datasource = new DruidDataSource();
-        datasource.setUrl("jdbc:mysql://localhost:3306/ukar?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true");
+        datasource.setUrl("jdbc:mysql://localhost:3307/ukar?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true");
         datasource.setUsername("root");
         datasource.setPassword("071012");
         datasource.setDriverClassName("com.mysql.jdbc.Driver");
@@ -138,7 +138,7 @@ public class MybatisPlusConfig {
         sqlSessionFactoryBean.setConfiguration(configuration);
 
         GlobalConfig globalConfig = new GlobalConfig();
-        //机器id信息可能要随着机器变更
+        //机器id信息可能要随着机器变更，使用雪花算法生成id，配套entity中id要设置属性 @TableId(value = "id", type = IdType.ASSIGN_ID)
         IdentifierGenerator generator = new DefaultIdentifierGenerator(1,0);
         globalConfig.setIdentifierGenerator(generator);
 //        GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();

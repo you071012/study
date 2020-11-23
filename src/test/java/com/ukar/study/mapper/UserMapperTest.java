@@ -26,7 +26,6 @@ public class UserMapperTest {
         user.setName("ukar1");
         user.setRemark("aaaa");
         userMapper.insert(user);
-
     }
 
     @Test

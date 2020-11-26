@@ -17,9 +17,19 @@ import java.util.List;
 import java.util.Map;
 
 public class CodeGenerator {
+    public static final String bashPath = "";
+    public static final String jdbcUrl = "jdbc:mysql://localhost:3306/ukar?useUnicode=true&characterEncoding=utf8";
+    public static final String jdbcName = "root";
+    public static final String jdbcPwd = "071012";
+
+    public static final String[] includeTables = {"t_user"};
+
+    public static final String partentPackage = "com.ukar.study";
 
     public static void main(String[] args) {
         AutoGenerator mpg = new AutoGenerator();
+
+        //todo 可能需要修改，到当前项目主目录
         String projectPath = System.getProperty("user.dir");
         String mapperXmlPath = "/templates/mapper.xml.vm";
 
@@ -71,9 +81,9 @@ public class CodeGenerator {
         dsc.setDbType(DbType.MYSQL);
         //数据源参数改一下
         dsc.setDriverName("com.mysql.jdbc.Driver");
-        dsc.setUsername("root");
-        dsc.setPassword("12345678");
-        dsc.setUrl("jdbc:mysql://localhost:3306/ukar?useUnicode=true&characterEncoding=utf8");
+        dsc.setUsername(jdbcName);
+        dsc.setPassword(jdbcPwd);
+        dsc.setUrl(jdbcUrl);
         mpg.setDataSource(dsc);
     }
 
@@ -115,14 +125,14 @@ public class CodeGenerator {
         strategy.setTablePrefix(new String[] { "t_"});// 表名匹配前缀，此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
         strategy.setEntityLombokModel(true); // 启用lombok增加实体类的get，set方法简化代码；如果不启用可以改为false
-        strategy.setInclude("t_user"); // 需要生成的表，多个用逗号隔开或数组
+        strategy.setInclude(includeTables); // 需要生成的表，多个用逗号隔开或数组
         mpg.setStrategy(strategy);
     }
 
     private static void packageInfo(AutoGenerator mpg) {
         PackageConfig pc = new PackageConfig();
         //在哪个父包下生成  改成自己的
-        pc.setParent("com.ukar.study");
+        pc.setParent(partentPackage);
         pc.setEntity("entity");
         pc.setMapper("mapper");
         pc.setXml("mapper.xml");

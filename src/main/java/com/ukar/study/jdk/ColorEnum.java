@@ -4,6 +4,8 @@ import sun.reflect.ReflectionFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 枚举会有隐藏属性name和ordinal
@@ -21,6 +23,8 @@ public enum ColorEnum {
 
     private String desc;
 
+    public static Map<String, ColorEnum> FAST_MAP;
+
     ColorEnum(String color, String desc) {
         this.color = color;
         this.desc = desc;
@@ -32,6 +36,14 @@ public enum ColorEnum {
 
     public String getDesc() {
         return desc;
+    }
+
+    static {
+        ColorEnum[] colorEnums = ColorEnum.values();
+        FAST_MAP = new HashMap<>(16);
+        for (ColorEnum enu : colorEnums) {
+            FAST_MAP.put(enu.getColor(), enu);
+        }
     }
 
     public static void main(String[] args) throws Exception {
@@ -52,5 +64,8 @@ public enum ColorEnum {
         ColorEnum colorEnum =
                 (ColorEnum) reflection.newConstructorAccessor(cstr).newInstance(new Object[]{"WHITE", 3,"white", "白色"});
         System.out.printf("%s = %d\n", colorEnum.toString(), colorEnum.ordinal());
+
+        ColorEnum.FAST_MAP.put(colorEnum.getColor(), colorEnum);
+        System.out.println(FAST_MAP.get("white"));
     }
 }

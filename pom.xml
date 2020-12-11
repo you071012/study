@@ -5,6 +5,8 @@
     <groupId>com.ukar.study</groupId>
     <artifactId>study</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
+    <packaging>jar</packaging>
     <name>study</name>
     <description>Demo project for Spring Boot</description>
 
@@ -126,13 +128,43 @@
                 </configuration>
             </plugin>
 
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <appendAssemblyId>false</appendAssemblyId>-->
+<!--                    <descriptorRefs>-->
+<!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--                    </descriptorRefs>-->
+<!--                    <archive>-->
+<!--                        <manifest>-->
+<!--                            &lt;!&ndash; 此处指定main方法入口的class &ndash;&gt;-->
+<!--                            &lt;!&ndash; <mainClass>com.xxx.uploadFile</mainClass> &ndash;&gt;-->
+<!--                        </manifest>-->
+<!--                    </archive>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>make-assembly</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>assembly</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+
             <!-- 设置程序JVM执行mainClass入口 -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+<!--                    将所有依赖打入jar包-->
                     <includeSystemScope>true</includeSystemScope>
+
+<!--                    主方法执行入口-->
                     <mainClass>com.ukar.study.StudyApplication</mainClass>
+                    <!-- 可执行jar后缀 -->
                     <classifier>exec</classifier>
                 </configuration>
                 <executions>

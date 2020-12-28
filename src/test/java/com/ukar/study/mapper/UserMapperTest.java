@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +23,15 @@ public class UserMapperTest {
 
     @Test
     public void insert(){
-        User user = new User();
-        user.setName("ukar1");
-        user.setRemark("aaaa");
-        userMapper.insert(user);
+//        User user = new User();
+//        user.setName("ukar1");
+//        user.setRemark("aaaa");
+//
+//        user.setLocalDateTime(LocalDateTime.of(2020,12,28,11,25,00));
+//        userMapper.insert(user);
+
+        User user1 = userMapper.selectById("1343397729505644546");
+        System.out.println(user1);
     }
 
     @Test

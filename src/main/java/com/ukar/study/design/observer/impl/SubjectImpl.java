@@ -5,6 +5,7 @@ import com.ukar.study.design.observer.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author jia.you
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public class SubjectImpl implements Subject {
 
-    private final List<Observer> observers = new ArrayList<>();
+    private final List<Observer> observers = new CopyOnWriteArrayList<>();
 
     @Override
     public void registerObserver(Observer o) {

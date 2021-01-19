@@ -29,6 +29,9 @@ public class DateFormateTestUtil {
                         String dateString2 = simpleDateFormat.format(parseDate);
 
                         boolean equals = dateString.equals(dateString2);
+                        if(!equals){
+                            throw new RuntimeException("error...");
+                        }
                         System.out.println(equals);
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -49,6 +52,9 @@ public class DateFormateTestUtil {
                         String dateString2 = ThreadLocalDateUtil.foramtDateTime(parseDate);
 
                         boolean equals = dateString.equals(dateString2);
+                        if(!equals){
+                            throw new RuntimeException("error...");
+                        }
                         System.out.println(equals);
                     } catch (Exception e) {
                         e.printStackTrace();

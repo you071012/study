@@ -3,6 +3,7 @@ package com.ukar.study.mapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.ukar.study.StudyApplication;
 import com.ukar.study.entity.User;
+import com.ukar.study.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class UserMapperTest {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private UserService userService;
+
 
     @Test
     public void insert(){
@@ -30,8 +34,13 @@ public class UserMapperTest {
 //        user.setLocalDateTime(LocalDateTime.of(2020,12,28,11,25,00));
 //        userMapper.insert(user);
 
-        User user1 = userMapper.selectById("1343397729505644546");
-        System.out.println(user1);
+//        User user1 = userMapper.selectById("1343397729505644546");
+//        System.out.println(user1);
+        User user = new User();
+        user.setName("ukar202106");
+        user.setRemark("ukar202106");
+        user.setLocalDateTime(LocalDateTime.now());
+        userService.transactionTemplateTest(user);
     }
 
     @Test

@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication(scanBasePackages = {"com.ukar.study.*"})
 @EnableScheduling
 @EnableAutoConfiguration
-@EnableAspectJAutoProxy(proxyTargetClass = true)//强制使用cglib代理,springboot 2.0以后默认使用的就是cglib代理
+//@EnableAspectJAutoProxy(proxyTargetClass = true)//true:强制使用cglib代理,springboot 2.0以后默认使用的就是cglib代理
 //@ServletComponentScan
 public class StudyApplication {
 

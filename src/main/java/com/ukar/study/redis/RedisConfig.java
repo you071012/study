@@ -21,44 +21,44 @@ import java.util.Set;
 @Configuration
 public class RedisConfig {
 
-    @Value("${yun.redis.address:127.0.0.1}")
+    @Value("${redis.address:127.0.0.1}")
     private String redisAddress;
 
-    @Value("${yun.redis.port:6379}")
+    @Value("${redis.port:6379}")
     private int redisPort;
 
-    @Value("${yun.redis.password:}")
+    @Value("${redis.password:}")
     private String password;
 
     /**
      * type:auto,cluster,sentinel,jedispool
-     * auto select aliyun.com to jedispool
+     * auto select alicom to jedispool
      */
-    @Value("${yun.redis.connection.type:auto}")
+    @Value("${redis.connection.type:auto}")
     private String redisConnectionType;
 
-    @Value("${yun.redis.sentinel.transact:}")
+    @Value("${redis.sentinel.transact:}")
     private String redisSentinelMaster;
 
-    @Value("${yun.redis.timeout:500}")
+    @Value("${redis.timeout:500}")
     private int timeout;
 
-    @Value("${yun.redis.maxRedirects:5}")
+    @Value("${redis.maxRedirects:5}")
     private int maxRedirects;
 
-    @Value("${yun.redis.minIdle:50}")
+    @Value("${redis.minIdle:50}")
     private int minIdle;
 
-    @Value("${yun.redis.maxIdle:50}")
+    @Value("${redis.maxIdle:50}")
     private int maxIdle;
 
-    @Value("${yun.redis.maxTotal:1500}")
+    @Value("${redis.maxTotal:1500}")
     private int maxTotal;
 
-    @Value("${yun.redis.maxWaitMillis:500}")
+    @Value("${redis.maxWaitMillis:500}")
     private int maxWaitMillis;
 
-    @Value("${yun.redis.ssl:false}")
+    @Value("${redis.ssl:false}")
     private boolean ssl;
 
     @Bean(value = "redisTemplate")

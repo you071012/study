@@ -9,8 +9,11 @@ import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
+import com.ukar.study.datasource.DynamicDataSource;
+import com.ukar.study.datasource.enums.DataSourceEnum;
 import org.apache.ibatis.plugin.Interceptor;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,9 +28,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Configuration
 @EnableTransactionManagement
@@ -35,85 +36,91 @@ import java.util.List;
         sqlSessionFactoryRef = "sqlSessionFactory")
 public class MybatisPlusConfig {
 
-    @Value("${yun.druid.driverClass:com.mysql.jdbc.Driver}")
-    private String driverClass;
-
-    @Value("${yun.druid.initialSize:5}")
-    private int initialSize;
-
-    @Value("${yun.druid.minIdle:5}")
-    private int minIdle;
-
-    @Value("${yun.druid.maxActive:60}")
-    private int maxActive;
-
-    @Value("${yun.druid.maxWait:10000}")
-    private long maxWait;
-
-    @Value("${yun.druid.timeBetweenEvictionRunsMillis:600000}")
-    private long timeBetweenEvictionRunsMillis;
-
-    @Value("${yun.druid.minEvictableIdleTimeMillis:300000}")
-    private long minEvictableIdleTimeMillis;
-
-    @Value("${yun.druid.keepAlive:true}")
-    private boolean keepAlive;
-
-    @Value("${yun.druid.validationQuery:select 1 from dual}")
-    private String validationQuery;
-
-    @Value("${yun.druid.testWhileIdle:true}")
-    private boolean testWhileIdle;
-
-    @Value("${yun.druid.testOnBorrow:false}")
-    private boolean testOnBorrow;
-
-    @Value("${yun.druid.testOnReturn:false}")
-    private boolean testOnReturn;
-
-    @Value("${yun.druid.poolPreparedStatements:false}")
-    //打开PSCache，并且指定每个连接上PSCache的大小
-    private boolean poolPreparedStatements;
-
-    @Value("${yun.druid.maxPoolPreparedStatementPerConnectionSize:20}")
-    private int maxPoolPreparedStatementPerConnectionSize;
-
-    @Value("${yun.druid.connectionProperties:druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000}")
-    //通过connectProperties属性来打开mergeSql功能；慢SQL记录
-    private String connectionProperties;
-
+    @Autowired
+    private JdbcConfig jdbcConfig;
 
     @Bean(name = "dataSource")
-    @Primary
+//    @Primary
     public DataSource dataSource() {
 
-        DruidDataSource datasource = new DruidDataSource();
-        datasource.setUrl("jdbc:mysql://localhost:3307/ukar?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true");
-        datasource.setUsername("root");
-        datasource.setPassword("071012");
-        datasource.setDriverClassName("com.mysql.jdbc.Driver");
+        DynamicDataSource dataSource = new DynamicDataSource();
+        dataSource.setDefaultTargetDataSource(dbMaster());
+        Map<Object, Object> dataSourceMap = new HashMap<>(4);
+        dataSourceMap.put(DataSourceEnum.Master.name(), dbMaster());
+        dataSourceMap.put(DataSourceEnum.Slave01.name(), dbSlave01());
+        dataSourceMap.put(DataSourceEnum.Slave02.name(), dbSlave02());
+        dataSource.setTargetDataSources(dataSourceMap);
 
-        datasource.setInitialSize(initialSize);
-        datasource.setMinIdle(minIdle);
-        datasource.setMaxActive(maxActive);
-        datasource.setMaxWait(maxWait);
-        datasource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-        datasource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-        datasource.setKeepAlive(keepAlive);
-        datasource.setValidationQuery(validationQuery);
-        datasource.setTestWhileIdle(testWhileIdle);
-        datasource.setTestOnBorrow(testOnBorrow);
-        datasource.setTestOnReturn(testOnReturn);
-        datasource.setPoolPreparedStatements(poolPreparedStatements);
-        datasource.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize);
-        datasource.setConnectionProperties(connectionProperties);
+        return dataSource;
+    }
 
-        return datasource;
+    /**
+     * 写库
+     *
+     * @return
+     */
+    private DataSource dbMaster() {
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setDriverClassName(jdbcConfig.getDriverClass());
+        dataSource.setUsername(jdbcConfig.getUsername());
+        dataSource.setPassword(jdbcConfig.getPassword());
+        dataSource.setUrl(jdbcConfig.getMasterUrl());
+        commonSet(dataSource);
+        return dataSource;
+    }
+
+    /**
+     * 读库1
+     *
+     * @return
+     */
+    private DataSource dbSlave01() {
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setDriverClassName(jdbcConfig.getDriverClass());
+        dataSource.setUsername(jdbcConfig.getUsername());
+        dataSource.setPassword(jdbcConfig.getPassword());
+        dataSource.setUrl(jdbcConfig.getMasterUrl());
+        dataSource.setUrl(jdbcConfig.getSlave01Url());
+        commonSet(dataSource);
+        return dataSource;
+    }
+
+    /**
+     * 读库1
+     *
+     * @return
+     */
+    private DataSource dbSlave02() {
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setDriverClassName(jdbcConfig.getDriverClass());
+        dataSource.setUsername(jdbcConfig.getUsername());
+        dataSource.setPassword(jdbcConfig.getPassword());
+        dataSource.setUrl(jdbcConfig.getMasterUrl());
+        dataSource.setUrl(jdbcConfig.getSlave02Url());
+        commonSet(dataSource);
+        return dataSource;
+    }
+
+    private void commonSet(DruidDataSource datasource){
+        datasource.setInitialSize(jdbcConfig.getInitialSize());
+        datasource.setMinIdle(jdbcConfig.getMinIdle());
+        datasource.setMaxActive(jdbcConfig.getMaxActive());
+        datasource.setMaxWait(jdbcConfig.getMaxWait());
+        datasource.setTimeBetweenEvictionRunsMillis(jdbcConfig.getTimeBetweenEvictionRunsMillis());
+        datasource.setMinEvictableIdleTimeMillis(jdbcConfig.getMinEvictableIdleTimeMillis());
+        datasource.setKeepAlive(jdbcConfig.isKeepAlive());
+        datasource.setValidationQuery(jdbcConfig.getValidationQuery());
+        datasource.setTestWhileIdle(jdbcConfig.isTestWhileIdle());
+        datasource.setTestOnBorrow(jdbcConfig.isTestOnBorrow());
+        datasource.setTestOnReturn(jdbcConfig.isTestOnReturn());
+        datasource.setPoolPreparedStatements(jdbcConfig.isPoolPreparedStatements());
+        datasource.setMaxPoolPreparedStatementPerConnectionSize(jdbcConfig.getMaxPoolPreparedStatementPerConnectionSize());
+        datasource.setConnectionProperties(jdbcConfig.getConnectionProperties());
     }
 
 
     @Bean(value = "sqlSessionFactory")
-    @Primary
+//    @Primary
     public MybatisSqlSessionFactoryBean sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
         MybatisSqlSessionFactoryBean sqlSessionFactoryBean = new MybatisSqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
@@ -173,7 +180,7 @@ public class MybatisPlusConfig {
     }
 
     @Bean(value = "transactionManager")
-    @Primary
+//    @Primary
     public DataSourceTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
         DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
         dataSourceTransactionManager.setDataSource(dataSource);

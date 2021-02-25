@@ -32,19 +32,24 @@ public class UserService {
     }
 
     public void transactionTemplateTest(User user){
-        transactionTemplate.execute((result) -> {
-            userMapper.insert(user);
+        transactionTemplate.execute((status) -> {
+            try{
+                userMapper.insert(user);
 
-            LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(User :: getName, user.getName());
-            userMapper.selectOne(queryWrapper);
+                LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(User :: getName, user.getName());
+                userMapper.selectOne(queryWrapper);
 
 
-            UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
-            userUpdateWrapper.eq("name", user.getName());
-            userUpdateWrapper.set("name", "ukar911");
-            userMapper.update(null, userUpdateWrapper);
-            return 1;
+                UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
+                userUpdateWrapper.eq("name", user.getName());
+                userUpdateWrapper.set("name", "ukar911");
+                userMapper.update(null, userUpdateWrapper);
+                return 1;
+            }catch (Exception e){
+                status.setRollbackOnly();
+                throw e;
+            }
         });
     }
 }

@@ -10,14 +10,14 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class TaskDemo {
 
-    @Scheduled(cron = "0/1 * * * * ?")
-    @Async("defaultExecutor")
-    public void taskTest(){
-        System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        try {
-            Thread.sleep(3000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Scheduled(cron = "0/1 * * * * ?")
+//    @Async("defaultExecutor")
+//    public void taskTest(){
+//        System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+//        try {
+//            Thread.sleep(3000L);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

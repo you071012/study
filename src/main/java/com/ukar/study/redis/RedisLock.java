@@ -177,4 +177,38 @@ public class RedisLock {
         }
         return false;
     }
+
+    /**
+     * 对lock中val加一并返回，如果key不存在直接设置并返回
+     * @param lock
+     * @return
+     */
+    public Lock incrAndGet(Lock lock) {
+        boolean f = false;
+        try {
+            RedisCallback<String> callback = (connection) -> {
+                JedisCommands commands = (JedisCommands) connection.getNativeConnection();
+                return commands.set(lock.getLockKey(), lock.getLockVal(), "NX");
+            };
+            String result = redisTemplate.execute(callback);
+            if(StringUtils.equals("OK", result)){
+                f = true;
+            }
+        } catch (Exception e) {
+           log.error("redis异常",e);
+           throw e;
+        }
+        if(f){
+            return lock;
+        }else {
+            RedisCallback<Long> callback = (connection) -> {
+                JedisCommands commands = (JedisCommands) connection.getNativeConnection();
+                Long incr = commands.incrBy(lock.getLockKey(),1);
+                return incr;
+            };
+            Long newVal = redisTemplate.execute(callback);
+            lock.setLockVal(String.valueOf(newVal));
+            return lock;
+        }
+    }
 }

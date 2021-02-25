@@ -7,6 +7,7 @@ import com.ukar.study.pipeline.TaskPipeline;
 import com.ukar.study.pipeline.demo.task.PayFristTask;
 import com.ukar.study.pipeline.demo.task.PayThreeTask;
 import com.ukar.study.pipeline.demo.task.PayTwoTask;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
         PayTwoTask.class,
         PayThreeTask.class
 })
+@Component
 public class PayTaskPipeline extends TaskPipeline<PayReqBO, PayRespBO> {
     @Override
     protected int hookBeforeTask(int currentIndex, List<CommonTask> immutableTaskList) {

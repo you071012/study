@@ -48,7 +48,7 @@ public interface MapStructUtil{
      * 已有对象更新
      * @param person
      * @param personDTO
-     * @InheritConfiguration 用于继承已有的转换方法，默认使用类带mapperings的
+     * @InheritConfiguration 用于继承已有的转换方法，默认使用类为带自定义映射的
      * @MappingTarget 用于更新的对象
      */
     @InheritConfiguration(name = "do2DTO")

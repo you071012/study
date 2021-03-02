@@ -2,7 +2,7 @@ package com.ukar.study.utils.mapstruct;
 
 import java.util.Date;
 
-public class MapStructTest {
+public class MapStructTest<T,R> {
     public static void main(String[] args) {
         Person person = new Person(1L,"zhige","zhige.me@gmail.com",new Date(),new User(18, 2L));
         User user = new User(18, 2L);

@@ -1,4 +1,4 @@
-package com.ukar.study.pegasus;
+package com.ukar.study.pegasus.bean;
 
 import lombok.Data;
 

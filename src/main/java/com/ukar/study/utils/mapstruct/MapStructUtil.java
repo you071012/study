@@ -16,10 +16,10 @@ import java.util.Date;
 public interface MapStructUtil{
     MapStructUtil INSTANCE = Mappers.getMapper(MapStructUtil.class);
 
-
+    MapStructUtil2 INSTANCE2 = Mappers.getMapper(MapStructUtil2.class);
     @Mapper
     interface MapStructUtil2{
-        MapStructUtil2 INSTANCE2 = Mappers.getMapper(MapStructUtil2.class);
+
         PersonDTO do2DTO(Person person);
     }
     /**

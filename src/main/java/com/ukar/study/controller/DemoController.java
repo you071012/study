@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 
-
 /**
  * @author jia.you
  * @date 2020/05/09
@@ -23,7 +22,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/demo")
 public class DemoController {
-
     @Autowired
     private UserMapper userMapper;
 

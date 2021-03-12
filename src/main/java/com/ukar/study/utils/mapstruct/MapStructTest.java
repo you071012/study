@@ -17,5 +17,9 @@ public class MapStructTest<T,R> {
         System.out.println(personDTO);
 
         System.out.println(MapStructUtil.INSTANCE.convert2Bool(0));
+
+        MapStructUtil.MapStructUtil2 instance2 = MapStructUtil.INSTANCE2;
+        PersonDTO personDTO1 = instance2.do2DTO(person);
+        System.out.println(personDTO1.toString());
     }
 }

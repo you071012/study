@@ -9,7 +9,7 @@ import com.ukar.study.jdk.bo.UserBO;
  * 适用于一个通用接口有多种处理模式，PrintUserService方法接收一个CallBack，通过传入不同的实现类或匿名对象，执行不同的回调
  * 详情见CallBackTest测试用例
  */
-@FunctionalInterface
+//@FunctionalInterface
 public interface CallBack<T>{
 
     void doCall(T t);

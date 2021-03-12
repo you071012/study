@@ -9,5 +9,4 @@ public class PrintUserService {
         QryResult<UserBO> qryResult = userFacade.queryUser();
         callBack.doCall(qryResult);
     }
-
 }

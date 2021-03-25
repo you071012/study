@@ -3,19 +3,17 @@ package com.ukar.study.pegasus;
 import com.ukar.study.pegasus.bean.AcctTransferDTO;
 import com.ukar.study.pegasus.bean.AcctTransferResult;
 import com.ukar.study.pegasus.bean.PgInvokeReturn;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 public class AcctTransferServer {
 
-    private PgInvokeReturnEvent<AcctTransferResult, PgInvokeReturn<AcctTransferResult>> event;
+    private PgInvokeReturnProcess<AcctTransferResult, PgInvokeReturn<AcctTransferResult>> process;
 
-    public AcctTransferServer(PgInvokeReturnEvent<AcctTransferResult, PgInvokeReturn<AcctTransferResult>> event) {
+    public AcctTransferServer(PgInvokeReturnProcess<AcctTransferResult, PgInvokeReturn<AcctTransferResult>> event) {
         //使用默认事件
         if(event == null){
             event = acctTransferResult -> new PgInvokeReturn<AcctTransferResult>();
         }
-        this.event = event;
+        this.process = process;
     }
 
     public PgInvokeReturn<AcctTransferResult> doInvoke(AcctTransferDTO acctTransferDTO) {
@@ -23,7 +21,7 @@ public class AcctTransferServer {
         AcctTransferResult result = new AcctTransferResult();
         result.setReturnCode("000");
         //封装返回参数
-        return this.event.doReturn(result);
+        return this.process.doReturn(result);
     }
 
     public static void main(String[] args) {

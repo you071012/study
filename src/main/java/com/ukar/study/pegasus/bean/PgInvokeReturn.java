@@ -4,22 +4,29 @@ import lombok.Data;
 
 @Data
 public class PgInvokeReturn<T> {
-    Throwable throwable;
-    T returnDTO;
+    private T returnDTO;
+    private String returnCode;
+    private String returnDesc;
 
-    public PgInvokeReturn(Throwable throwable, T returnDTO) {
-        this.throwable = throwable;
+    public PgInvokeReturn(InvokeReturnEnum invokeReturnEnum) {
+        this.returnCode = invokeReturnEnum.getReturnCode();
+        this.returnDesc = invokeReturnEnum.getReturnDesc();
+    }
+
+    public PgInvokeReturn(String returnCode, String returnDesc, T returnDTO) {
         this.returnDTO = returnDTO;
+        this.returnCode = returnCode;
+        this.returnDesc = returnDesc;
     }
 
     public PgInvokeReturn() {
     }
 
-    public static <T> PgInvokeReturn<T> succ(Throwable throwable, T t){
-        return new PgInvokeReturn(null, t);
+    public static <T> PgInvokeReturn<T> succ(T t){
+        return new PgInvokeReturn(InvokeReturnEnum.SYS_SUCCESS.getReturnCode(), InvokeReturnEnum.SYS_SUCCESS.getReturnDesc(), t);
     }
 
-    public static <T> PgInvokeReturn<T> fail(Throwable throwable){
-        return new PgInvokeReturn(throwable, null);
+    public static <T> PgInvokeReturn<T> fail(InvokeReturnEnum invokeReturnEnum){
+        return new PgInvokeReturn(invokeReturnEnum);
     }
 }

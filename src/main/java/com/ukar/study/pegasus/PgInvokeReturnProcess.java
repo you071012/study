@@ -1,6 +1,6 @@
 package com.ukar.study.pegasus;
 
-public interface PgInvokeReturnEvent<T, R> {
+public interface PgInvokeReturnProcess<T, R> {
 
     R doReturn(T t);
 }

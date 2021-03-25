@@ -36,11 +36,12 @@ public interface MapStructUtil{
      * @return
      */
     @Mappings({
-            @Mapping(source = "person.birthday", target = "birth"),
+            @Mapping(source = "person.birthday", target = "birth", ignore = false),
             @Mapping(source = "person.birthday", target = "birthDateFormat", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(source = "user.id", target = "id"),
             @Mapping(source = "user.age", target = "personSubDTO.age"),
-            @Mapping(target = "createTime", expression = "java( new Date() )")
+            @Mapping(target = "createTime", expression = "java( new Date() )"),
+            @Mapping(target = "name", constant = "ukar111")
             })
     PersonDTO do2DTO(Person person, User user);
 

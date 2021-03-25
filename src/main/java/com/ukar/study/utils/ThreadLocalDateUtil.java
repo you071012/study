@@ -20,15 +20,15 @@ public class ThreadLocalDateUtil {
             ThreadLocal.withInitial(() -> new SimpleDateFormat("HH:mm:ss"));
 
     public static String foramtDate(Date date){
-        return DATE_LOCAL.get().format(date);
+        return format(date, DATE_LOCAL);
     }
 
     public static String foramtDateTime(Date date){
-        return DATE_TIME_LOCAL.get().format(date);
+        return format(date, DATE_TIME_LOCAL);
     }
 
     public static String foramtTime(Date date){
-        return TIME_LOCAL.get().format(date);
+        return format(date, TIME_LOCAL);
     }
 
     public static Date parseDateTime(String str){
@@ -39,7 +39,18 @@ public class ThreadLocalDateUtil {
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
+        }finally {
+            DATE_TIME_LOCAL.remove();
         }
+    }
+
+    private static String format(Date date, ThreadLocal<SimpleDateFormat> threadLocal){
+        try{
+            return threadLocal.get().format(date);
+        }finally {
+            threadLocal.remove();
+        }
+
     }
 
     public static void main(String[] args) {

@@ -4,8 +4,10 @@ package com.ukar.study.utils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author jia.you
@@ -55,7 +57,7 @@ public class SaltUtil {
     }
 
     public static void main(String[] args) {
-        String salt = SaltUtil.getInstance().getSalt("6666000001042121_B00155350");
-        System.out.println(salt);
+//        String salt = SaltUtil.getInstance().getSalt("6666000001042121_B00155350");
+//        System.out.println(salt);
     }
 }

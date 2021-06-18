@@ -187,4 +187,11 @@ public class MybatisPlusConfig {
         return dataSourceTransactionManager;
     }
 
+//    @Bean
+//    public PaginationInterceptor paginationInterceptor() {
+//        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+//        //你的最大单页限制数量，默认 500 条，小于 0 如 -1 不受限制
+//        //paginationInterceptor.setLimit(2);
+//        return paginationInterceptor;
+//    }
 }

@@ -54,5 +54,4 @@ public class UserMapperTest {
         list.add(user);
         userMapper.batchInsert(list);
     }
-
 }

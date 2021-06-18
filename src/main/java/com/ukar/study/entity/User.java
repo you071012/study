@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -13,7 +14,7 @@ import java.time.ZoneOffset;
 
 @TableName(value = "t_user")
 @Data
-public class User {
+public class User implements Serializable {
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;

@@ -30,9 +30,10 @@ public class MyBlockQueue<E> {
     public void put(E e){
         boolean isLock = false;
         try{
-            isLock = lock.tryLock(1, TimeUnit.SECONDS);
+            lock.lock();
+            System.out.println("枷锁结果：" + e + isLock);
             while (size == linkedList.size()){
-                //通知在notFull条件上等待的线程休眠
+                //通知在notFull条件上等待的线程休眠，await()方法会释放当前lock锁
                 notFull.await();
             }
             linkedList.add(e);
@@ -42,17 +43,14 @@ public class MyBlockQueue<E> {
         }catch (Exception ex){
             System.out.println(ex);
         }finally {
-            if(isLock){
-                lock.unlock();
-            }
+            System.out.println("释放锁：" + e);
+            lock.unlock();
         }
     }
 
     public E take(){
-        boolean isLock = false;
-
         try{
-            isLock = lock.tryLock(1, TimeUnit.SECONDS);
+            lock.lock();
             while (linkedList.size() == 0){
                 //通知在notFull条件上等待的线程休眠
                 notEmpty.await();
@@ -65,24 +63,42 @@ public class MyBlockQueue<E> {
         }catch (Exception ex){
             System.out.println(ex);
         }finally {
-            if(isLock){
-                lock.unlock();
-            }
+            lock.unlock();
         }
         return null;
     }
 
 
     public static void main(String[] args) {
-        MyBlockQueue<String> myBlockQueue = new MyBlockQueue<>(10);
+        MyBlockQueue<String> myBlockQueue = new MyBlockQueue<>(2);
         for(int i = 0 ;i < 10; i++){
             String s = i + "";
             Thread t = new Thread(() -> myBlockQueue.put(s));
             t.start();
         }
 
-        for(int i = 0 ;i < 10; i++){
-            Thread t = new Thread(() -> System.out.println(myBlockQueue.take()));
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("----------------------");
+
+        for(int i = 0 ;i < 2; i++){
+            Thread t = new Thread(() -> myBlockQueue.take());
+            t.start();
+        }
+
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("----------------------");
+
+        for(int i = 0 ;i < 3; i++){
+            Thread t = new Thread(() -> myBlockQueue.take());
             t.start();
         }
 

@@ -4,10 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisSentinelConnection;
+import org.springframework.data.redis.connection.RedisServer;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.JedisCommands;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -150,6 +156,12 @@ public class RedisService {
         HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
         Set<Object> keys = hash.keys(key);
         return keys;
+    }
+
+    public boolean hDel(String key, Object hashKey){
+        HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
+        Long delete = hash.delete(key, hashKey);
+        return delete > 0;
     }
 
     /**

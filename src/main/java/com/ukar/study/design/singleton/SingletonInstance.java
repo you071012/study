@@ -53,5 +53,4 @@ public class SingletonInstance {
     public static SingletonInstance getInstance2(){
         return SingletonHolder.instance;
     }
-
 }

@@ -11,11 +11,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParser
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.ukar.study.datasource.DynamicDataSource;
 import com.ukar.study.datasource.enums.DataSourceEnum;
+import com.ukar.study.spring.simple.DemoPusher;
 import org.apache.ibatis.plugin.Interceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -34,6 +36,7 @@ import java.util.*;
 @EnableTransactionManagement
 @MapperScan(basePackages = {"com.ukar.study.mapper"},
         sqlSessionFactoryRef = "sqlSessionFactory")
+@ConditionalOnBean(value = {DemoPusher.class})
 public class MybatisPlusConfig {
 
     @Autowired

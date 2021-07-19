@@ -4,8 +4,14 @@ import com.ukar.study.StudyApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest(classes = StudyApplication.class)
 @RunWith(SpringRunner.class)
@@ -66,5 +72,24 @@ public class RedisTest {
         System.out.println(lockResult2);
 
 
+    }
+
+    @Autowired
+    @Qualifier("stringRedisTemplate")
+    private RedisTemplate stringRedisTemplate;
+
+    @Test
+    public void test111() throws InterruptedException {
+
+        String key = "aaa";
+        stringRedisTemplate.opsForValue().set(key, "1");
+
+        Long conut = stringRedisTemplate.opsForValue().increment(key, 1L);
+        System.out.println(conut);
+        //第一次设置，设置过期时间
+        stringRedisTemplate.expire(key, 5, TimeUnit.SECONDS);
+
+        Thread.sleep(6000);
+        System.out.println(stringRedisTemplate.opsForValue().get(key));
     }
 }

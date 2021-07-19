@@ -1,6 +1,8 @@
 package com.ukar.study.spring.simple;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,9 +13,21 @@ import org.springframework.stereotype.Component;
  * @Description:
  */
 @Component
+@Slf4j
 public class DemoListener implements ApplicationListener<DemoEvent> {
+
+    /*
+     * 使用@Async可以使消息异步执行
+     */
     @Override
+    @Async(value = "defaultExecutor")
     public void onApplicationEvent(DemoEvent event) {
-        System.out.println("注册成功，消息内容：" + event.getMsg());
+        log.info("注册成功，消息内容：{}", event.getMsg());
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        log.info("注册结束，消息内容：{}", event.getMsg());
     }
 }

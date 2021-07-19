@@ -2,7 +2,6 @@ package com.ukar.study.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.*;
@@ -12,7 +11,6 @@ import java.util.concurrent.*;
  * @date 2020/06/18
  */
 @Configuration
-@EnableAsync
 public class ExecutorConfig {
 
     /**
@@ -30,8 +28,8 @@ public class ExecutorConfig {
         executor.setKeepAliveSeconds(10);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
         executor.setThreadNamePrefix("study-thread-");
-        //初始化加载，如果有需要初始化加载的任务
-//        executor.initialize();
+        //初始化
+        executor.initialize();
         return executor;
     }
 }

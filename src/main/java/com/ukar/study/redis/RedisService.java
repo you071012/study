@@ -28,7 +28,7 @@ public class RedisService {
     private static Logger logger = LoggerFactory.getLogger(RedisService.class);
 
     @Autowired
-    @Qualifier("redisTemplate")
+    @Qualifier("stringRedisTemplate")
     private RedisTemplate redisTemplate;
 
     /**

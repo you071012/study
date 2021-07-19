@@ -23,7 +23,9 @@ public class DemoPusher implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
-    public void pushlish(String msg) throws InterruptedException {
+    public void pushlish(String msg) {
+        applicationContext.publishEvent(new DemoEvent(msg));
+        applicationContext.publishEvent(new DemoEvent(msg));
         applicationContext.publishEvent(new DemoEvent(msg));
     }
 

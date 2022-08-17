@@ -24,7 +24,7 @@ public class DemoListener implements ApplicationListener<DemoEvent> {
     public void onApplicationEvent(DemoEvent event) {
         log.info("注册成功，消息内容：{}", event.getMsg());
         try {
-            Thread.sleep(2000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

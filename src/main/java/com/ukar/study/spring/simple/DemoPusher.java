@@ -25,8 +25,6 @@ public class DemoPusher implements ApplicationContextAware {
 
     public void pushlish(String msg) {
         applicationContext.publishEvent(new DemoEvent(msg));
-        applicationContext.publishEvent(new DemoEvent(msg));
-        applicationContext.publishEvent(new DemoEvent(msg));
     }
 
 

@@ -36,6 +36,21 @@ public class RedisLock {
         UNLOCK_LUA = sb.toString();
     }
 
+
+    public boolean tryLock(Lock lock, long expire){
+        int times = 3;
+        do {
+            try{
+                return lock(lock, expire);
+            }catch (Exception e){
+                log.info("redis加锁异常，开始第{}次重试", times);
+            }
+            times--;
+        }while (times > 0);
+
+        return false;
+    }
+
     /**
      * 正确加锁模式
      * @param lock
@@ -53,8 +68,8 @@ public class RedisLock {
             return !StringUtils.isEmpty(result);
         } catch (Exception e) {
             log.error("set redis occured an exception", e);
+            throw e;
         }
-        return false;
     }
 
     /**
@@ -141,6 +156,20 @@ public class RedisLock {
         return false;
     }
 
+    public boolean tryRelease(Lock lock){
+        int times = 3;
+        do {
+            try{
+                return releaseLock(lock);
+            }catch (Exception e){
+                log.info("redis释放异常，开始第{}次重试", times);
+            }
+            times--;
+        }while (times > 0);
+
+        return false;
+    }
+
     /**
      * 释放锁，为了防止锁内容被修改，可以在释放锁时比较lock中val值是否一样，这里就不做比较了
      * @param lock
@@ -174,8 +203,8 @@ public class RedisLock {
             return result != null && result > 0;
         } catch (Exception e) {
             log.error("release lock occured an exception", e);
+            throw e;
         }
-        return false;
     }
 
     /**

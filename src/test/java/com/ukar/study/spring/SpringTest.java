@@ -23,12 +23,11 @@ public class SpringTest {
     private DemoPusher demoPusher;
 
     @Test
-    public void test(){
-        demoPusher.pushlish("你好啊");
-        try {
-            Thread.currentThread().join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void test() throws InterruptedException {
+        demoPusher.pushlish("你好啊1");
+        demoPusher.pushlish("你好啊2");
+        demoPusher.pushlish("你好啊3");
+
+        Thread.currentThread().join();
     }
 }

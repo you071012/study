@@ -1,5 +1,7 @@
 package com.ukar.study.redis;
 
+import com.google.common.collect.Sets;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,13 @@ import org.springframework.data.redis.connection.RedisServer;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCommands;
+import redis.clients.jedis.MultiKeyCommands;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -235,5 +241,36 @@ public class RedisService {
         return zset.rangeByScore(key, scoure, scoure1);
     }
 
+
+    /**
+     * 扫描查找匹配的key，该方法是非阻塞的
+     * @param pattern
+     * @return
+     */
+    public Set<String> scan(String pattern){
+        return (Set<String>) redisTemplate.execute((RedisCallback<Set<String>>) connection -> {
+            Set<String> keys = Sets.newHashSet();
+
+            JedisCommands commands = (JedisCommands) connection.getNativeConnection();
+            MultiKeyCommands multiKeyCommands = (MultiKeyCommands) commands;
+
+            ScanParams scanParams = new ScanParams();
+            scanParams.match(pattern + "*");
+            scanParams.count(1000);
+            ScanResult<String> scan = multiKeyCommands.scan("0", scanParams);
+            while (scan.getStringCursor() != null) {
+                keys.addAll(scan.getResult());
+
+                // scan.getStringCursor() = 0表示已经无可读数据了
+                if(!"0".equals(scan.getStringCursor())){
+                    scan = multiKeyCommands.scan(scan.getStringCursor(), scanParams);
+                    continue;
+                }
+                break;
+            }
+
+            return keys;
+        });
+    }
 
 }

@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest(classes = StudyApplication.class)
@@ -91,5 +92,12 @@ public class RedisTest {
 
         Thread.sleep(6000);
         System.out.println(stringRedisTemplate.opsForValue().get(key));
+    }
+
+
+    @Test
+    public void testScan(){
+        Set<String> key = redisService.scan("key");
+        System.out.println(key);
     }
 }

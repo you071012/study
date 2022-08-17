@@ -178,7 +178,7 @@ public class RedisService {
      */
     public void lPush(String k, Object v) {
         ListOperations<String, Object> list = redisTemplate.opsForList();
-        list.rightPush(k, v);
+        list.leftPush(k, v);
     }
 
     /**

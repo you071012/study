@@ -32,8 +32,6 @@ public class TokenBucket {
 
     private volatile boolean isStart = false;
 
-    private ReentrantLock lock = new ReentrantLock(true);
-
     private static final byte A_CHAR = 'a';
 
     public TokenBucket() {
@@ -69,30 +67,27 @@ public class TokenBucket {
      *
      * @return
      */
-    public boolean getTokens(byte[] dataSize) {
+    public synchronized boolean getTokens(byte[] dataSize) {
 
-        int needTokenNum = dataSize.length / everyTokenSize + 1;// 传输内容大小对应的桶个数
+        // 传输内容大小对应的桶个数
+        int needTokenNum = dataSize.length / everyTokenSize + 1;
 
-        final ReentrantLock lock = this.lock;
-        lock.lock();
-        try {
-            boolean result = needTokenNum <= tokenQueue.size(); // 是否存在足够的桶数量
-            if (!result) {
-                return false;
-            }
+        // 是否存在足够的桶数量
+        boolean result = needTokenNum <= tokenQueue.size();
 
-            int tokenCount = 0;
-            for (int i = 0; i < needTokenNum; i++) {
-                Byte poll = tokenQueue.poll();
-                if (poll != null) {
-                    tokenCount++;
-                }
-            }
-
-            return tokenCount == needTokenNum;
-        } finally {
-            lock.unlock();
+        if (!result) {
+            return false;
         }
+
+        int tokenCount = 0;
+        for (int i = 0; i < needTokenNum; i++) {
+            Byte poll = tokenQueue.poll();
+            if (poll != null) {
+                tokenCount++;
+            }
+        }
+
+        return tokenCount == needTokenNum;
     }
 
     public synchronized void start() {
@@ -115,29 +110,13 @@ public class TokenBucket {
 
     }
 
-    public void stop() {
+    public synchronized void stop() {
         isStart = false;
         scheduledExecutorService.shutdown();
     }
 
     public boolean isStarted() {
         return isStart;
-    }
-
-    class TokenProducer implements Runnable {
-
-        private int avgFlowRate;
-        private TokenBucket tokenBucket;
-
-        public TokenProducer(int avgFlowRate, TokenBucket tokenBucket) {
-            this.avgFlowRate = avgFlowRate;
-            this.tokenBucket = tokenBucket;
-        }
-
-        @Override
-        public void run() {
-            tokenBucket.addTokens(avgFlowRate);
-        }
     }
 
     public static TokenBucket newBuilder() {
@@ -169,6 +148,22 @@ public class TokenBucket {
 
         return sbuilder.toString();
 
+    }
+
+    class TokenProducer implements Runnable {
+
+        private int avgFlowRate;
+        private TokenBucket tokenBucket;
+
+        public TokenProducer(int avgFlowRate, TokenBucket tokenBucket) {
+            this.avgFlowRate = avgFlowRate;
+            this.tokenBucket = tokenBucket;
+        }
+
+        @Override
+        public void run() {
+            tokenBucket.addTokens(avgFlowRate);
+        }
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {

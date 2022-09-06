@@ -95,7 +95,11 @@ public class TokenBucket {
         }
     }
 
-    public void start() {
+    public synchronized void start() {
+
+        if(isStart){
+            return;
+        }
 
         // 初始化桶队列大小
         if (maxFlowRate != 0) {
@@ -167,29 +171,13 @@ public class TokenBucket {
 
     }
 
-    public static void main(String[] args) throws IOException,
-            InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
-        tokenTest();
-    }
-
-    private static void arrayTest() {
-        ArrayBlockingQueue<Integer> tokenQueue = new ArrayBlockingQueue<Integer>(
-                10);
-        tokenQueue.offer(1);
-        tokenQueue.offer(1);
-        tokenQueue.offer(1);
-        System.out.println(tokenQueue.size());
-        System.out.println(tokenQueue.remainingCapacity());
-    }
-
-    private static void tokenTest() throws InterruptedException, IOException {
         TokenBucket tokenBucket = TokenBucket.newBuilder().avgFlowRate(512)
                 .maxFlowRate(1024).build();
 
-//        BufferedWriter bufferedWriter = new BufferedWriter(
-//                new OutputStreamWriter(new FileOutputStream("D:/ds_test")));
-        String data = "xxxx";// 四个字节
+        // 四个字节
+        String data = "xxxx";
         for (int i = 1; i <= 1000; i++) {
 
             Random random = new Random();
@@ -198,18 +186,11 @@ public class TokenBucket {
                     i1).getBytes());
             TimeUnit.MILLISECONDS.sleep(100);
             if (tokens) {
-//                bufferedWriter.write("token pass --- index:" + i1);
                 System.out.println("token pass --- index:" + i1);
             } else {
-//                bufferedWriter.write("token rejuect --- index" + i1);
                 System.out.println("token rejuect --- index" + i1);
             }
-
-//            bufferedWriter.newLine();
-//            bufferedWriter.flush();
         }
-
-//        bufferedWriter.close();
     }
 
 }
